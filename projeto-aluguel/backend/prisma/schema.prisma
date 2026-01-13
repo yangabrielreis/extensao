@@ -1,0 +1,71 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model User {
+  id        Int      @id @default(autoincrement())
+  nome      String
+  email     String   @unique
+  senha     String
+  role      Role     @default(STUDENT)
+  telefone  String?
+  creci     String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  imoveis   Property[]
+
+  @@map("users")
+}
+
+model Property {
+  id          Int      @id @default(autoincrement())
+  titulo      String
+  descricao   String   @db.Text
+  valor       Decimal  @db.Decimal(10, 2)
+  mobiliada   Boolean  @default(false)
+  voltagem    String?
+  tamanho     Float?
+  inc_net     Boolean  @default(false)
+  inc_luz     Boolean  @default(false)
+  inc_agua    Boolean  @default(false)
+  inc_condo   Boolean  @default(false)
+  endereco    String
+  bairro      String
+  numero      String?
+  latitude    Float?
+  longitude   Float?
+  status      PropertyStatus @default(PENDING)
+  ownerId     Int
+  owner       User     @relation(fields: [ownerId], references: [id])
+  fotos       Photo[]
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@map("properties")
+}
+
+model Photo {
+  id          Int      @id @default(autoincrement())
+  url         String
+  propertyId  Int
+  property    Property @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+
+  @@map("photos")
+}
+
+enum Role {
+  STUDENT
+  LANDLORD
+  ADMIN
+}
+
+enum PropertyStatus {
+  PENDING
+  APPROVED
+  REJECTED
+  RENTED
+}
