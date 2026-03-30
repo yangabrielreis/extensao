@@ -1,0 +1,53 @@
+1. Tabela users
+
+    id: Numérico, gerado automaticamente (Chave Primária).
+
+    nome, email, senha: Textos obrigatórios (email é único).
+
+    role: Enum (STUDENT, LANDLORD, ADMIN). Padrão: STUDENT.
+
+    telefone, creci: Textos opcionais.
+
+    createdAt, updatedAt: Datas automáticas.
+
+    Relacionamento: 1 para N com a tabela properties (um usuário tem vários imóveis).
+
+2. Tabela properties
+
+    id: Numérico, gerado automaticamente (Chave Primária).
+
+    titulo, descricao, bairro, endereco: Textos obrigatórios.
+
+    valor: Decimal obrigatório (10,2).
+
+    tamanho, latitude, longitude: Numéricos opcionais (float).
+
+    voltagem, numero: Textos opcionais
+
+    mobiliada, inc_net, inc_luz, inc_agua, inc_condo: Booleanos. Padrão: false.
+
+    status: Enum (PENDING, APPROVED, REJECTED, RENTED). Padrão: PENDING.
+
+    ownerId: Numérico obrigatório (Chave Estrangeira de users).
+
+    createdAt, updatedAt: Datas automáticas.
+
+    Relacionamentos: N para 1 com users (pertence a um dono) e 1 para N com photos (possui várias fotos).
+
+3. Tabela photos
+
+    id: Numérico, gerado automaticamente (Chave Primária).
+
+    url: Texto obrigatório.
+
+    propertyId: Numérico obrigatório (Chave Estrangeira de properties).
+
+    Relacionamento: N para 1 com properties. Possui exclusão em cascata (deletar o imóvel deleta a foto).
+
+
+Todos Users Obrigatorio = gmail, senha
+Todos Users opcional = telefone.
+
+Imobiliaria/Corretor = CNPJ e Creeci
+
+Usuario default = CPF

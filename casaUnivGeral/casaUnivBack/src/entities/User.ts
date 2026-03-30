@@ -1,11 +1,21 @@
-import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, OneToMany } from "typeorm";
-import { Role } from "./enums";
-import { Property } from "./Property";
+import { Entity, PrimaryGeneratedColumn, Column, OneToMany, TableInheritance, ChildEntity, ManyToMany, JoinTable } from 'typeorm';
+import { Anuncio } from './Anuncio';
 
-@Entity('users') 
+export enum Role {
+    DEFAULT = 'DEFAULT',
+    PROFISSIONAL = 'PROFISSIONAL',
+    CORRETOR = 'CORRETOR',
+    IMOBILIARIA = 'IMOBILIARIA'
+}
+
+@Entity()
+@TableInheritance({ column: { type: "varchar", name: "type" } })
 export class User {
-    @PrimaryGeneratedColumn('increment') 
-    id: number;
+    @PrimaryGeneratedColumn()
+    idUser: number;
+
+    @Column({ type: 'enum', enum: Role, default: Role.DEFAULT })
+    role: Role;
 
     @Column()
     nome: string;
@@ -13,24 +23,34 @@ export class User {
     @Column({ unique: true })
     email: string;
 
-    @Column()
-    senha: string;
-
-    @Column({ type: 'enum', enum: Role, default: Role.STUDENT })
-    role: Role;
-
     @Column({ nullable: true })
     telefone: string;
 
+    @OneToMany(() => Anuncio, (anuncio) => anuncio.anunciante)
+    anuncios: Anuncio[];
+
+}
+
+@ChildEntity()
+export class DefaultUser extends User {
+    @Column({ nullable: true, unique: true })
+    cpf: string;
+}
+
+@ChildEntity()
+export class Imobiliaria extends User {
+    @Column({ nullable: true, unique: true })
+    cnpj: string;
+
+    @Column({ nullable: true })
+    nomeRepresentante: string;
+    
     @Column({ nullable: true })
     creci: string;
+}
 
-    @CreateDateColumn()
-    createdAt: Date;
-
-    @UpdateDateColumn()
-    updatedAt: Date;
-
-    @OneToMany(() => Property, (property) => property.owner)
-    imoveis: Property[];
+@ChildEntity()
+export class Corretor extends User {
+    @Column({ nullable: true })
+    creci: string;
 }
