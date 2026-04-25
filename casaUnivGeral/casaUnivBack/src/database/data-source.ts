@@ -1,7 +1,7 @@
 import "reflect-metadata";
 import { DataSource } from "typeorm";
 import "dotenv/config";
-import { User } from "../entities/User";
+import { DefaultUser, Imobiliaria, Corretor} from "../entities/User";
 import { Anuncio } from "../entities/Anuncio";
 import { Imagens } from "../entities/Imagens";
 import { Interesse } from "../entities/Interesse";
@@ -12,7 +12,7 @@ export const AppDataSource = new DataSource({
   url: process.env.DATABASE_URL || "",
   synchronize: true,
   logging: true,
-  entities: [User, Anuncio, Imagens, Interesse, Localizacao],
+  entities: [DefaultUser, Imobiliaria, Corretor, Anuncio, Imagens, Interesse, Localizacao],
   subscribers: [],
   migrations: [],
 });

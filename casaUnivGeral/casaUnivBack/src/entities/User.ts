@@ -1,16 +1,13 @@
-import { Entity, PrimaryGeneratedColumn, Column, OneToMany, TableInheritance, ChildEntity, ManyToMany, JoinTable } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from 'typeorm';
 import { Anuncio } from './Anuncio';
 
 export enum Role {
     DEFAULT = 'DEFAULT',
-    PROFISSIONAL = 'PROFISSIONAL',
     CORRETOR = 'CORRETOR',
     IMOBILIARIA = 'IMOBILIARIA'
 }
 
-@Entity()
-@TableInheritance({ column: { type: "varchar", name: "type" } })
-export class User {
+export abstract class User {
     @PrimaryGeneratedColumn()
     idUser: number;
 
@@ -23,34 +20,41 @@ export class User {
     @Column({ unique: true })
     email: string;
 
+    @Column({ select: false })
+    senha: string;
+
     @Column({ nullable: true })
     telefone: string;
-
-    @OneToMany(() => Anuncio, (anuncio) => anuncio.anunciante)
-    anuncios: Anuncio[];
-
+    
 }
 
-@ChildEntity()
+@Entity('default_users')
 export class DefaultUser extends User {
     @Column({ nullable: true, unique: true })
     cpf: string;
+    
 }
 
-@ChildEntity()
+@Entity('Imobiliaria')
 export class Imobiliaria extends User {
-    @Column({ nullable: true, unique: true })
+    @Column({unique: true})
     cnpj: string;
 
-    @Column({ nullable: true })
+    @Column()
     nomeRepresentante: string;
     
-    @Column({ nullable: true })
+    @Column()
     creci: string;
+
+    @OneToMany(() => Anuncio, (anuncio) => anuncio.imobiliaria)
+    anuncios: Anuncio[];
 }
 
-@ChildEntity()
+@Entity('Corretor')
 export class Corretor extends User {
-    @Column({ nullable: true })
+    @Column({unique: true})
     creci: string;
+
+    @OneToMany(() => Anuncio, (anuncio) => anuncio.corretor)
+    anuncios: Anuncio[];
 }

@@ -1,5 +1,5 @@
 import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, OneToOne, OneToMany, JoinColumn } from 'typeorm';
-import { User } from './User';
+import { Imobiliaria, Corretor } from './User'; 
 import { Localizacao } from './Localizacao';
 import { Imagens } from './Imagens';
 
@@ -41,9 +41,14 @@ export class Anuncio {
     @Column({ type: 'boolean', default: false })
     garagem: boolean;
 
-    @ManyToOne(() => User, (user) => user.anuncios)
-    @JoinColumn({ name: 'idUser' })
-    anunciante: User;
+
+    @ManyToOne(() => Imobiliaria, (imobiliaria) => imobiliaria.anuncios, { nullable: true })
+    @JoinColumn({ name: 'idImobiliaria' })
+    imobiliaria: Imobiliaria;
+
+    @ManyToOne(() => Corretor, (corretor) => corretor.anuncios, { nullable: true })
+    @JoinColumn({ name: 'idCorretor' })
+    corretor: Corretor;
 
     @OneToOne(() => Localizacao, (localizacao) => localizacao.anuncio, { cascade: true })
     localizacao: Localizacao;
